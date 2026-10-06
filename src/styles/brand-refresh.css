@@ -1,0 +1,312 @@
+:root {
+  --vnz-workspace: #f8f6f1;
+  --vnz-shell-surface: #fbfbfa;
+  --vnz-shell-divider: #e5e1dc;
+  --vnz-navy: #22303d;
+  --vnz-navy-deep: #1a2631;
+  --vnz-border: #e7e3de;
+  --vnz-border-strong: #d8d2ca;
+  --background: var(--vnz-workspace);
+  --border: var(--vnz-border);
+  --separator: var(--vnz-border);
+  --surface-secondary: #f6f3ef;
+  --surface-tertiary: #efeae4;
+  --field-border: #ddd8d2;
+}
+
+.admin-shell {
+  background: var(--vnz-workspace);
+}
+
+.admin-shell__content {
+  background: var(--vnz-workspace);
+}
+
+.admin-topbar {
+  position: relative;
+  z-index: 20;
+  width: auto;
+  min-height: 62px;
+  flex-basis: 62px;
+  margin: 12px 14px 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--vnz-shell-surface);
+  box-shadow: none;
+}
+
+.admin-topbar__actions {
+  gap: 6px;
+}
+
+.admin-user-chip {
+  gap: 9px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 4px 6px;
+  box-shadow: none;
+}
+
+.admin-user-chip__avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  box-shadow: none;
+}
+
+.admin-user-chip__details {
+  gap: 1px;
+}
+
+.admin-user-chip__details strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-user-chip__details span {
+  color: #7b8490;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.admin-topbar__logout {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #748091;
+  box-shadow: none;
+}
+
+.admin-topbar__logout:hover {
+  border-color: transparent;
+  background: #f1ede8;
+  color: #4f5968;
+}
+
+.admin-sidebar {
+  position: relative;
+  z-index: 1;
+  margin: 12px 0 12px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--vnz-shell-surface);
+  box-shadow: none;
+}
+
+.admin-sidebar__footer {
+  border-top-color: transparent;
+  background: var(--vnz-shell-surface);
+}
+
+.applicant-list,
+.contact-list,
+.team-member-list,
+.news-list,
+.partner-list,
+.product-list,
+.job-post-detail,
+.job-post-edit,
+.job-post-create,
+.applicant-detail,
+.contact-detail,
+.team-member-detail,
+.team-member-edit,
+.team-member-create,
+.news-detail,
+.news-create,
+.news-edit,
+.product-detail,
+.product-edit,
+.product-create,
+.partner-detail,
+.partner-edit,
+.partner-create {
+  background: transparent !important;
+}
+
+/* Detail pages share the Applicant detail outer rhythm. */
+.applicant-detail,
+.applicant-detail__error,
+.contact-detail,
+.contact-detail__error,
+.team-member-detail,
+.team-member-detail__error,
+.news-detail,
+.news-detail__error,
+.product-detail,
+.product-detail__error,
+.partner-detail,
+.partner-detail__error,
+.job-post-detail,
+.job-post-detail__error {
+  width: min(100%, 1560px);
+  margin: 0 auto;
+  padding: 22px 24px 34px;
+}
+
+@media (max-width: 700px) {
+  .applicant-detail,
+  .applicant-detail__error,
+  .contact-detail,
+  .contact-detail__error,
+  .team-member-detail,
+  .team-member-detail__error,
+  .news-detail,
+  .news-detail__error,
+  .product-detail,
+  .product-detail__error,
+  .partner-detail,
+  .partner-detail__error,
+  .job-post-detail,
+  .job-post-detail__error {
+    padding: 18px 14px 28px;
+  }
+}
+
+/* Create/Edit pages use the same outer frame as their detail pages. */
+.team-member-edit,
+.team-member-edit__error,
+.news-create,
+.news-edit,
+.news-edit__blocked,
+.product-edit,
+.product-edit__error,
+.partner-edit,
+.partner-edit__error,
+.job-post-edit,
+.job-post-edit__blocked {
+  width: min(100%, 1560px);
+  margin: 0 auto;
+  padding: 22px 24px 34px;
+}
+
+@media (max-width: 700px) {
+  .team-member-edit,
+  .team-member-edit__error,
+  .news-create,
+  .news-edit,
+  .news-edit__blocked,
+  .product-edit,
+  .product-edit__error,
+  .partner-edit,
+  .partner-edit__error,
+  .job-post-edit,
+  .job-post-edit__blocked {
+    padding: 18px 14px 28px;
+  }
+}
+
+/* Breadcrumbs are intentionally kept compact like the public VNZ site's navigation language. */
+nav[class*="__breadcrumb"] {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: #9b9bb1 !important;
+  font-size: 11px !important;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+nav[class*="__breadcrumb"] a {
+  color: #9b9bb1 !important;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 140ms ease-out;
+}
+
+nav[class*="__breadcrumb"] a:hover {
+  color: #73758b !important;
+}
+
+nav[class*="__breadcrumb"] a:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid rgb(255 91 35 / 38%);
+  outline-offset: 2px;
+}
+
+nav[class*="__breadcrumb"] > svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  color: #b6b4bd;
+  stroke-width: 1.75;
+}
+
+nav[class*="__breadcrumb"] > span {
+  color: #b6b4bd !important;
+}
+
+nav[class*="__breadcrumb"] > span:last-child {
+  color: var(--vnz-orange) !important;
+  font-weight: 500;
+}
+
+nav[class*="__breadcrumb"] + h1,
+nav[class*="__breadcrumb"] + header h1,
+nav[class*="__breadcrumb"] + [class*="__heading"] h1,
+nav[class*="__breadcrumb"] + [class*="__page-header"] h1,
+nav[class*="__breadcrumb"] + [class*="__main-card"] h1:first-of-type {
+  margin-top: 0;
+  color: #18212b;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+nav[class*="__breadcrumb"] + header,
+nav[class*="__breadcrumb"] + [class*="__heading"],
+nav[class*="__breadcrumb"] + [class*="__page-header"] {
+  margin-top: 0;
+}
+
+@media (max-width: 640px) {
+  nav[class*="__breadcrumb"] {
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  nav[class*="__breadcrumb"] + h1,
+  nav[class*="__breadcrumb"] + header h1,
+  nav[class*="__breadcrumb"] + [class*="__heading"] h1,
+  nav[class*="__breadcrumb"] + [class*="__page-header"] h1,
+  nav[class*="__breadcrumb"] + [class*="__main-card"] h1:first-of-type {
+    font-size: 24px;
+  }
+}
+
+/* Keep the admin shell surfaces on one shared color source and treatment. */
+.admin-topbar,
+.admin-sidebar,
+.admin-sidebar__nav,
+.admin-sidebar__footer {
+  background-color: var(--vnz-shell-surface) !important;
+  background-image: none !important;
+}
+
+.admin-topbar {
+  border: 0 !important;
+  border-bottom: 1px solid var(--vnz-shell-divider) !important;
+  box-shadow: none !important;
+}
+
+.admin-sidebar {
+  border: 0 !important;
+  border-right: 1px solid var(--vnz-shell-divider) !important;
+  box-shadow: none !important;
+}
+
+.admin-sidebar__footer {
+  border-top: 1px solid var(--vnz-shell-divider) !important;
+}
+
+.admin-shell,
+.admin-shell__content {
+  background: var(--vnz-workspace) !important;
+}
