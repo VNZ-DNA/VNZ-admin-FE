@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "typecheck": "tsc -b",
     "preview": "vite preview",
     "test": "pnpm --filter @vnz/admin-tests test",
     "test:typecheck": "pnpm --filter @vnz/admin-tests typecheck"
