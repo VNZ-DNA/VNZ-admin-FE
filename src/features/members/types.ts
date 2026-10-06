@@ -38,6 +38,8 @@ export const TEAM_MEMBER_EMPLOYMENT_STATUSES = ['Working', 'Resigned'] as const
 
 export type TeamMemberEmploymentStatus = (typeof TEAM_MEMBER_EMPLOYMENT_STATUSES)[number]
 
+export type TeamMemberMediaAction = 'remove'
+
 export type TeamMemberDetail = TeamMemberListItem
 
 export interface GetTeamMembersParams {
@@ -77,11 +79,11 @@ export interface CreateTeamMemberRequest {
   position: string
   jobLevel: TeamMemberJobLevel
   joinedDate: string
-  avatarUrl: string | null
+  avatar?: File
   animationUrl: string | null
-  audioUrl: string | null
+  audio?: File
   hometown: string | null
-  backgroundUrl: string | null
+  background?: File
   hobbies: string | null
   personalQuote: string | null
 }
@@ -93,11 +95,14 @@ export interface UpdateTeamMemberProfileRequest {
   position: string
   jobLevel: TeamMemberJobLevel
   joinedDate: string
-  avatarUrl: string | null
+  avatar?: File
+  avatarAction?: TeamMemberMediaAction
   animationUrl: string | null
-  audioUrl: string | null
+  audio?: File
+  audioAction?: TeamMemberMediaAction
   hometown: string | null
-  backgroundUrl: string | null
+  background?: File
+  backgroundAction?: TeamMemberMediaAction
   hobbies: string | null
   personalQuote: string | null
   employmentStatus: TeamMemberEmploymentStatus

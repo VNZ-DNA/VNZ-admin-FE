@@ -7,7 +7,7 @@ const read = (path) => readFileSync(fileURLToPath(new URL(path, import.meta.url)
 
 const contactDetail = read('../../src/features/contacts/components/contact-detail.tsx')
 const contactStyles = read('../../src/styles/contacts.css')
-const newsStyles = read('../../src/styles/news.css')
+const bilingualCardStyles = read('../../src/styles/bilingual-content-tabs.css')
 
 test('contact detail uses an action-only heading and groups customer fields into two columns', () => {
   assert.match(contactDetail, /className="contact-detail__heading contact-detail__heading--actions-only"/)
@@ -35,5 +35,5 @@ test('contact detail follows news detail spacing and surface tokens', () => {
   assert.match(contactStyles, /\.contact-detail__summary-main strong \{[^}]*color:\s*#273240;[^}]*font-size:\s*18px;[^}]*font-weight:\s*750;/s)
   assert.match(contactStyles, /\.contact-detail__section h2 \{[^}]*color:\s*#273240;[^}]*font-size:\s*15px;[^}]*font-weight:\s*800;/s)
   assert.match(contactStyles, /\.contact-detail__field > strong,\s*\.contact-detail__message \{[^}]*border:\s*0;[^}]*background:\s*transparent;[^}]*color:\s*#4b5563;[^}]*font-size:\s*12px;/s)
-  assert.match(newsStyles, /\.news-detail__article-card,\s*\.news-detail__info-card \{[^}]*border:\s*1px solid #e2e8f0;[^}]*border-radius:\s*10px;/s)
+  assert.match(bilingualCardStyles, /\.bilingual-content-card \{[^}]*--bilingual-card-border:\s*#e2e8f0;[^}]*border:\s*1px solid var\(--bilingual-card-border\);[^}]*border-radius:\s*10px;/s)
 })

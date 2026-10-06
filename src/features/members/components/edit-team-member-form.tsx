@@ -8,6 +8,13 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { useTeamMemberDetail } from '@/features/members/hooks/use-team-member-detail'
 import { useUpdateTeamMember } from '@/features/members/hooks/use-update-team-member'
+import { TeamMemberMediaManager } from '@/features/members/components/team-member-media-manager'
+import {
+  buildTeamMemberMediaMutation,
+  createTeamMemberMediaDraft,
+  isTeamMemberMediaDirty,
+  type TeamMemberMediaDraft,
+} from '@/features/members/member-media'
 import {
   updateTeamMemberSchema,
   type UpdateTeamMemberFormValues,
@@ -55,11 +62,8 @@ function getInitialValues(member: TeamMemberDetail): UpdateTeamMemberFormValues 
     position: member.position ?? '',
     jobLevel: member.jobLevel ?? '',
     joinedDate: toDateInput(member.joinedDate),
-    avatarUrl: member.avatarUrl ?? '',
     animationUrl: member.animationUrl ?? '',
-    audioUrl: member.audioUrl ?? '',
     hometown: member.hometown ?? '',
-    backgroundUrl: member.backgroundUrl ?? '',
     hobbies: member.hobbies ?? '',
     personalQuote: member.personalQuote ?? '',
     employmentStatus: toEmploymentStatus(member.employmentStatus),
@@ -78,11 +82,8 @@ function hasProfileChanges(
     values.position !== initialValues.position ||
     values.jobLevel !== initialValues.jobLevel ||
     values.joinedDate !== initialValues.joinedDate ||
-    values.avatarUrl !== initialValues.avatarUrl ||
     values.animationUrl !== initialValues.animationUrl ||
-    values.audioUrl !== initialValues.audioUrl ||
     values.hometown !== initialValues.hometown ||
-    values.backgroundUrl !== initialValues.backgroundUrl ||
     values.hobbies !== initialValues.hobbies ||
     values.personalQuote !== initialValues.personalQuote ||
     values.employmentStatus !== initialValues.employmentStatus
@@ -118,6 +119,11 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
   const leaveConfirmation = useOverlayState()
   const updateMutation = useUpdateTeamMember(member.id)
   const [savedMember, setSavedMember] = useState(member)
+  const [media, setMedia] = useState<TeamMemberMediaDraft>(() => createTeamMemberMediaDraft({
+    avatar: member.avatarUrl,
+    background: member.backgroundUrl,
+    audio: member.audioUrl,
+  }))
   const [pendingNavigation, setPendingNavigation] = useState<{
     destination: string
     state?: MemberNavigationState
@@ -139,7 +145,7 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
   const isPublishedValue = useWatch({ control, name: 'isPublished' })
   const watchedValues = useWatch({ control }) as UpdateTeamMemberFormValues
   const isFormLocked = savedMember.isPublished
-  const profileDirty = hasProfileChanges(watchedValues, savedValues)
+  const profileDirty = hasProfileChanges(watchedValues, savedValues) || isTeamMemberMediaDirty(media)
   const isSaving = updateMutation.isPending
 
   useEffect(() => {
@@ -183,14 +189,12 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
       position: values.position.trim(),
       jobLevel: values.jobLevel as TeamMemberJobLevel,
       joinedDate: values.joinedDate,
-      avatarUrl: toNullableString(values.avatarUrl),
       animationUrl: toNullableString(values.animationUrl),
-      audioUrl: toNullableString(values.audioUrl),
       hometown: toNullableString(values.hometown),
-      backgroundUrl: toNullableString(values.backgroundUrl),
       hobbies: toNullableString(values.hobbies),
       personalQuote: toNullableString(values.personalQuote),
       employmentStatus: values.employmentStatus as TeamMemberEmploymentStatus,
+      ...buildTeamMemberMediaMutation(media),
     }
 
     return payload
@@ -226,6 +230,11 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
 
   function applySuccessfulUpdate(updatedMember: TeamMemberDetail) {
     setSavedMember(updatedMember)
+    setMedia(createTeamMemberMediaDraft({
+      avatar: updatedMember.avatarUrl,
+      background: updatedMember.backgroundUrl,
+      audio: updatedMember.audioUrl,
+    }))
     reset(getInitialValues(updatedMember))
     clearErrors()
   }
@@ -487,38 +496,13 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
             <div className="team-member-edit__section">
               <h2>Thông tin hồ sơ</h2>
               <div className="team-member-edit__profile-grid">
-                <TextField className="team-member-edit__field">
-                  <Label>Avatar URL</Label>
-                  <Controller
-                    control={control}
-                    name="avatarUrl"
-                    render={({ field }) => <Input {...field} />}
-                  />
-                </TextField>
+                <TeamMemberMediaManager value={media} onChange={setMedia} disabled={isFormLocked || isSaving} />
 
                 <TextField className="team-member-edit__field">
                   <Label>Animation URL</Label>
                   <Controller
                     control={control}
                     name="animationUrl"
-                    render={({ field }) => <Input {...field} />}
-                  />
-                </TextField>
-
-                <TextField className="team-member-edit__field">
-                  <Label>Audio URL</Label>
-                  <Controller
-                    control={control}
-                    name="audioUrl"
-                    render={({ field }) => <Input {...field} />}
-                  />
-                </TextField>
-
-                <TextField className="team-member-edit__field">
-                  <Label>Background URL</Label>
-                  <Controller
-                    control={control}
-                    name="backgroundUrl"
                     render={({ field }) => <Input {...field} />}
                   />
                 </TextField>

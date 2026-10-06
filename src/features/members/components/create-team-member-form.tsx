@@ -2,10 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Card, FieldError, Form, Input, Label, TextField } from '@heroui/react'
 import axios from 'axios'
 import { ChevronRight, Plus } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
+import { TeamMemberMediaManager } from '@/features/members/components/team-member-media-manager'
 import { useCreateTeamMember } from '@/features/members/hooks/use-create-team-member'
+import { buildTeamMemberMediaFiles, createTeamMemberMediaDraft, type TeamMemberMediaDraft } from '@/features/members/member-media'
 import {
   createTeamMemberSchema,
   type CreateTeamMemberFormValues,
@@ -45,6 +48,7 @@ function getCreateMemberErrorMessage(error: unknown): string {
 export function CreateTeamMemberForm() {
   const navigate = useNavigate()
   const createMemberMutation = useCreateTeamMember()
+  const [media, setMedia] = useState<TeamMemberMediaDraft>(() => createTeamMemberMediaDraft())
   const {
     register,
     handleSubmit,
@@ -59,11 +63,8 @@ export function CreateTeamMemberForm() {
       position: '',
       jobLevel: '',
       joinedDate: '',
-      avatarUrl: '',
       animationUrl: '',
-      audioUrl: '',
       hometown: '',
-      backgroundUrl: '',
       hobbies: '',
       personalQuote: '',
     },
@@ -81,13 +82,11 @@ export function CreateTeamMemberForm() {
       position: values.position.trim(),
       jobLevel: values.jobLevel as TeamMemberJobLevel,
       joinedDate: values.joinedDate,
-      avatarUrl: toNullableString(values.avatarUrl),
       animationUrl: toNullableString(values.animationUrl),
-      audioUrl: toNullableString(values.audioUrl),
       hometown: toNullableString(values.hometown),
-      backgroundUrl: toNullableString(values.backgroundUrl),
       hobbies: toNullableString(values.hobbies),
       personalQuote: toNullableString(values.personalQuote),
+      ...buildTeamMemberMediaFiles(media),
     }
 
     try {
@@ -246,24 +245,11 @@ export function CreateTeamMemberForm() {
             <div className="team-member-create__section">
               <h2>Thông tin hồ sơ</h2>
               <div className="team-member-create__profile-grid">
-                <TextField className="team-member-create__field">
-                  <Label>Avatar URL</Label>
-                  <Input placeholder="Nhập đường dẫn ảnh đại diện" {...register('avatarUrl')} />
-                </TextField>
+                <TeamMemberMediaManager value={media} onChange={setMedia} disabled={isSaving} />
 
                 <TextField className="team-member-create__field">
                   <Label>Animation URL</Label>
                   <Input placeholder="Nhập đường dẫn animation" {...register('animationUrl')} />
-                </TextField>
-
-                <TextField className="team-member-create__field">
-                  <Label>Audio URL</Label>
-                  <Input placeholder="Nhập đường dẫn audio" {...register('audioUrl')} />
-                </TextField>
-
-                <TextField className="team-member-create__field">
-                  <Label>Background URL</Label>
-                  <Input placeholder="Nhập đường dẫn ảnh nền" {...register('backgroundUrl')} />
                 </TextField>
 
                 <TextField className="team-member-create__field">

@@ -11,11 +11,29 @@ import type {
   TeamMemberFilterOptions,
   TeamMemberListItem,
   TeamMemberPagedResult,
+  UpdateTeamMemberProfileRequest,
   UpdateTeamMemberRequest,
 } from '@/features/members/types'
 
 function appendNullable(formData: FormData, key: string, value: string | null) {
   formData.append(key, value ?? '')
+}
+
+function appendMedia(
+  formData: FormData,
+  payload: Pick<
+    CreateTeamMemberRequest,
+    'avatar' | 'background' | 'audio'
+  > & Partial<Pick<UpdateTeamMemberProfileRequest, 'avatarAction' | 'backgroundAction' | 'audioAction'>>,
+) {
+  if (payload.avatar) formData.append('avatar', payload.avatar)
+  else if (payload.avatarAction) formData.append('avatarAction', payload.avatarAction)
+
+  if (payload.background) formData.append('background', payload.background)
+  else if (payload.backgroundAction) formData.append('backgroundAction', payload.backgroundAction)
+
+  if (payload.audio) formData.append('audio', payload.audio)
+  else if (payload.audioAction) formData.append('audioAction', payload.audioAction)
 }
 
 function buildCreateFormData(payload: CreateTeamMemberRequest): FormData {
@@ -26,13 +44,11 @@ function buildCreateFormData(payload: CreateTeamMemberRequest): FormData {
   formData.append('position', payload.position)
   formData.append('jobLevel', payload.jobLevel)
   formData.append('joinedDate', payload.joinedDate)
-  appendNullable(formData, 'avatarUrl', payload.avatarUrl)
   appendNullable(formData, 'animationUrl', payload.animationUrl)
-  appendNullable(formData, 'audioUrl', payload.audioUrl)
   appendNullable(formData, 'hometown', payload.hometown)
-  appendNullable(formData, 'backgroundUrl', payload.backgroundUrl)
   appendNullable(formData, 'hobbies', payload.hobbies)
   appendNullable(formData, 'personalQuote', payload.personalQuote)
+  appendMedia(formData, payload)
   return formData
 }
 
@@ -50,14 +66,12 @@ function buildUpdateFormData(payload: UpdateTeamMemberRequest): FormData {
   formData.append('position', payload.position)
   formData.append('jobLevel', payload.jobLevel)
   formData.append('joinedDate', payload.joinedDate)
-  appendNullable(formData, 'avatarUrl', payload.avatarUrl)
   appendNullable(formData, 'animationUrl', payload.animationUrl)
-  appendNullable(formData, 'audioUrl', payload.audioUrl)
   appendNullable(formData, 'hometown', payload.hometown)
-  appendNullable(formData, 'backgroundUrl', payload.backgroundUrl)
   appendNullable(formData, 'hobbies', payload.hobbies)
   appendNullable(formData, 'personalQuote', payload.personalQuote)
   formData.append('employmentStatus', payload.employmentStatus)
+  appendMedia(formData, payload)
 
   return formData
 }
