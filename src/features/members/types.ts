@@ -80,7 +80,7 @@ export interface CreateTeamMemberRequest {
   jobLevel: TeamMemberJobLevel
   joinedDate: string
   avatar?: File
-  animationUrl: string | null
+  animation?: File
   audio?: File
   hometown: string | null
   background?: File
@@ -97,7 +97,8 @@ export interface UpdateTeamMemberProfileRequest {
   joinedDate: string
   avatar?: File
   avatarAction?: TeamMemberMediaAction
-  animationUrl: string | null
+  animation?: File
+  animationAction?: TeamMemberMediaAction
   audio?: File
   audioAction?: TeamMemberMediaAction
   hometown: string | null

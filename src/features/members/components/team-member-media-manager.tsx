@@ -32,6 +32,12 @@ const mediaSlots: Array<{
     formats: 'JPG, JPEG, PNG, GIF hoặc WebP',
   },
   {
+    kind: 'animation',
+    label: 'Animation',
+    accept: 'image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp',
+    formats: 'JPG, JPEG, PNG, GIF hoặc WebP',
+  },
+  {
     kind: 'background',
     label: 'Background',
     accept: 'image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp',
@@ -77,9 +83,15 @@ export function TeamMemberMediaManager({
   disabled = false,
 }: TeamMemberMediaManagerProps) {
   const avatarInputRef = useRef<HTMLInputElement>(null)
+  const animationInputRef = useRef<HTMLInputElement>(null)
   const backgroundInputRef = useRef<HTMLInputElement>(null)
   const audioInputRef = useRef<HTMLInputElement>(null)
-  const inputRefs = { avatar: avatarInputRef, background: backgroundInputRef, audio: audioInputRef }
+  const inputRefs = {
+    avatar: avatarInputRef,
+    animation: animationInputRef,
+    background: backgroundInputRef,
+    audio: audioInputRef,
+  }
   const [errors, setErrors] = useState<Partial<Record<TeamMemberMediaKind, string>>>({})
 
   function chooseFile(kind: TeamMemberMediaKind) {

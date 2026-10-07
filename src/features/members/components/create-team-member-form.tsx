@@ -63,7 +63,6 @@ export function CreateTeamMemberForm() {
       position: '',
       jobLevel: '',
       joinedDate: '',
-      animationUrl: '',
       hometown: '',
       hobbies: '',
       personalQuote: '',
@@ -82,7 +81,6 @@ export function CreateTeamMemberForm() {
       position: values.position.trim(),
       jobLevel: values.jobLevel as TeamMemberJobLevel,
       joinedDate: values.joinedDate,
-      animationUrl: toNullableString(values.animationUrl),
       hometown: toNullableString(values.hometown),
       hobbies: toNullableString(values.hobbies),
       personalQuote: toNullableString(values.personalQuote),
@@ -246,11 +244,6 @@ export function CreateTeamMemberForm() {
               <h2>Thông tin hồ sơ</h2>
               <div className="team-member-create__profile-grid">
                 <TeamMemberMediaManager value={media} onChange={setMedia} disabled={isSaving} />
-
-                <TextField className="team-member-create__field">
-                  <Label>Animation URL</Label>
-                  <Input placeholder="Nhập đường dẫn animation" {...register('animationUrl')} />
-                </TextField>
 
                 <TextField className="team-member-create__field">
                   <Label>Sở thích</Label>

@@ -23,7 +23,6 @@ export const updateTeamMemberSchema = z.object({
     .string()
     .min(1, 'Vui lòng chọn ngày tham gia.')
     .refine((value) => !Number.isNaN(Date.parse(value)), 'Ngày tham gia không hợp lệ.'),
-  animationUrl: z.string(),
   hometown: z.string(),
   hobbies: z.string(),
   personalQuote: z.string(),

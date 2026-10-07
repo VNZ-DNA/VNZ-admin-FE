@@ -23,11 +23,14 @@ function appendMedia(
   formData: FormData,
   payload: Pick<
     CreateTeamMemberRequest,
-    'avatar' | 'background' | 'audio'
-  > & Partial<Pick<UpdateTeamMemberProfileRequest, 'avatarAction' | 'backgroundAction' | 'audioAction'>>,
+    'avatar' | 'animation' | 'background' | 'audio'
+  > & Partial<Pick<UpdateTeamMemberProfileRequest, 'avatarAction' | 'animationAction' | 'backgroundAction' | 'audioAction'>>,
 ) {
   if (payload.avatar) formData.append('avatar', payload.avatar)
   else if (payload.avatarAction) formData.append('avatarAction', payload.avatarAction)
+
+  if (payload.animation) formData.append('animation', payload.animation)
+  else if (payload.animationAction) formData.append('animationAction', payload.animationAction)
 
   if (payload.background) formData.append('background', payload.background)
   else if (payload.backgroundAction) formData.append('backgroundAction', payload.backgroundAction)
@@ -44,7 +47,6 @@ function buildCreateFormData(payload: CreateTeamMemberRequest): FormData {
   formData.append('position', payload.position)
   formData.append('jobLevel', payload.jobLevel)
   formData.append('joinedDate', payload.joinedDate)
-  appendNullable(formData, 'animationUrl', payload.animationUrl)
   appendNullable(formData, 'hometown', payload.hometown)
   appendNullable(formData, 'hobbies', payload.hobbies)
   appendNullable(formData, 'personalQuote', payload.personalQuote)
@@ -66,7 +68,6 @@ function buildUpdateFormData(payload: UpdateTeamMemberRequest): FormData {
   formData.append('position', payload.position)
   formData.append('jobLevel', payload.jobLevel)
   formData.append('joinedDate', payload.joinedDate)
-  appendNullable(formData, 'animationUrl', payload.animationUrl)
   appendNullable(formData, 'hometown', payload.hometown)
   appendNullable(formData, 'hobbies', payload.hobbies)
   appendNullable(formData, 'personalQuote', payload.personalQuote)

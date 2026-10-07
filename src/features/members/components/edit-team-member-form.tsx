@@ -62,7 +62,6 @@ function getInitialValues(member: TeamMemberDetail): UpdateTeamMemberFormValues 
     position: member.position ?? '',
     jobLevel: member.jobLevel ?? '',
     joinedDate: toDateInput(member.joinedDate),
-    animationUrl: member.animationUrl ?? '',
     hometown: member.hometown ?? '',
     hobbies: member.hobbies ?? '',
     personalQuote: member.personalQuote ?? '',
@@ -82,7 +81,6 @@ function hasProfileChanges(
     values.position !== initialValues.position ||
     values.jobLevel !== initialValues.jobLevel ||
     values.joinedDate !== initialValues.joinedDate ||
-    values.animationUrl !== initialValues.animationUrl ||
     values.hometown !== initialValues.hometown ||
     values.hobbies !== initialValues.hobbies ||
     values.personalQuote !== initialValues.personalQuote ||
@@ -121,6 +119,7 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
   const [savedMember, setSavedMember] = useState(member)
   const [media, setMedia] = useState<TeamMemberMediaDraft>(() => createTeamMemberMediaDraft({
     avatar: member.avatarUrl,
+    animation: member.animationUrl,
     background: member.backgroundUrl,
     audio: member.audioUrl,
   }))
@@ -189,7 +188,6 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
       position: values.position.trim(),
       jobLevel: values.jobLevel as TeamMemberJobLevel,
       joinedDate: values.joinedDate,
-      animationUrl: toNullableString(values.animationUrl),
       hometown: toNullableString(values.hometown),
       hobbies: toNullableString(values.hobbies),
       personalQuote: toNullableString(values.personalQuote),
@@ -232,6 +230,7 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
     setSavedMember(updatedMember)
     setMedia(createTeamMemberMediaDraft({
       avatar: updatedMember.avatarUrl,
+      animation: updatedMember.animationUrl,
       background: updatedMember.backgroundUrl,
       audio: updatedMember.audioUrl,
     }))
@@ -497,15 +496,6 @@ function EditFormContent({ member }: { member: TeamMemberDetail }) {
               <h2>Thông tin hồ sơ</h2>
               <div className="team-member-edit__profile-grid">
                 <TeamMemberMediaManager value={media} onChange={setMedia} disabled={isFormLocked || isSaving} />
-
-                <TextField className="team-member-edit__field">
-                  <Label>Animation URL</Label>
-                  <Controller
-                    control={control}
-                    name="animationUrl"
-                    render={({ field }) => <Input {...field} />}
-                  />
-                </TextField>
 
                 <TextField className="team-member-edit__field">
                   <Label>Sở thích</Label>

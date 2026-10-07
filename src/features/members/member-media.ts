@@ -1,6 +1,6 @@
 import type { TeamMemberMediaAction } from '@/features/members/types'
 
-export type TeamMemberMediaKind = 'avatar' | 'background' | 'audio'
+export type TeamMemberMediaKind = 'avatar' | 'animation' | 'background' | 'audio'
 
 export type TeamMemberMediaSlot = {
   currentUrl: string | null
@@ -13,6 +13,8 @@ export type TeamMemberMediaDraft = Record<TeamMemberMediaKind, TeamMemberMediaSl
 export type TeamMemberMediaMutation = {
   avatar?: File
   avatarAction?: TeamMemberMediaAction
+  animation?: File
+  animationAction?: TeamMemberMediaAction
   background?: File
   backgroundAction?: TeamMemberMediaAction
   audio?: File
@@ -24,6 +26,7 @@ type InitialMediaUrls = Partial<Record<TeamMemberMediaKind, string | null>>
 export function createTeamMemberMediaDraft(urls: InitialMediaUrls = {}): TeamMemberMediaDraft {
   return {
     avatar: { currentUrl: urls.avatar ?? null, removed: false },
+    animation: { currentUrl: urls.animation ?? null, removed: false },
     background: { currentUrl: urls.background ?? null, removed: false },
     audio: { currentUrl: urls.audio ?? null, removed: false },
   }
@@ -66,7 +69,7 @@ export function buildTeamMemberMediaMutation(
 ): TeamMemberMediaMutation {
   const mutation: TeamMemberMediaMutation = {}
 
-  for (const kind of ['avatar', 'background', 'audio'] as const) {
+  for (const kind of ['avatar', 'animation', 'background', 'audio'] as const) {
     const slot = draft[kind]
     if (slot.file) {
       mutation[kind] = slot.file
@@ -83,7 +86,7 @@ export function buildTeamMemberMediaFiles(
 ): Partial<Record<TeamMemberMediaKind, File>> {
   const files: Partial<Record<TeamMemberMediaKind, File>> = {}
 
-  for (const kind of ['avatar', 'background', 'audio'] as const) {
+  for (const kind of ['avatar', 'animation', 'background', 'audio'] as const) {
     const file = draft[kind].file
     if (file) files[kind] = file
   }
