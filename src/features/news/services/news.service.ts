@@ -57,6 +57,8 @@ export const newsService = {
     const query = new URLSearchParams()
 
     if (trimmedSearch) query.set('search', trimmedSearch)
+    if (params.createdAt) query.set('createdAt', params.createdAt)
+    if (params.publishAt) query.set('publishAt', params.publishAt)
     for (const status of params.status ?? []) query.append('status', status)
     for (const categoryId of params.categoryIds ?? []) query.append('categoryId', categoryId)
     query.set('page', String(params.page))

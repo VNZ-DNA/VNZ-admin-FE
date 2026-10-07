@@ -1,3 +1,5 @@
+import type { DateSortDirection } from '@/lib/date-sort'
+
 export type JobPostStatusFilter = 'Draft' | 'Open' | 'Closed' | 'Expired'
 
 export interface JobPostListItem {
@@ -32,6 +34,7 @@ export interface JobPostTranslations {
 }
 
 export interface GetJobPostsParams {
+  expiredDate?: DateSortDirection
   search?: string
   status?: JobPostStatusFilter[]
   departmentId?: string[]

@@ -1,3 +1,5 @@
+import type { DateSortDirection } from '@/lib/date-sort'
+
 export type NewsStatusFilter = 'Draft' | 'Published' | 'Closed'
 
 export interface NewsCategoryOption {
@@ -26,6 +28,8 @@ export interface PagedNewsArticleList {
 }
 
 export interface GetNewsArticlesParams {
+  createdAt?: DateSortDirection
+  publishAt?: DateSortDirection
   search?: string
   status?: NewsStatusFilter[]
   categoryIds?: string[]

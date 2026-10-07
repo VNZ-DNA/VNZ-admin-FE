@@ -27,9 +27,12 @@ import {
   JOB_POST_LEVELS,
   type JobPostLevel,
   type JobPostListItem,
+  type PagedJobPostList,
   type JobPostStatusFilter,
 } from "@/features/careers/types";
 import type { ApiResponse } from "@/lib/http/api-response";
+import { DateSortHeader } from "@/components/date-sort-header";
+import { getDateSortError, type DateSortDirection } from "@/lib/date-sort";
 import { ROUTE_PATHS } from "@/routes/route-paths";
 
 const SEARCH_DEBOUNCE_MS = 350;
@@ -420,6 +423,8 @@ export function JobPostList() {
   const [departmentIds, setDepartmentIds] = useState<string[]>([]);
   const [jobLevels, setJobLevels] = useState<JobPostLevel[]>([]);
   const [page, setPage] = useState(1);
+  const [expiredDate, setExpiredDate] = useState<DateSortDirection>();
+  const [lastData, setLastData] = useState<PagedJobPostList>();
   const [pageSize, setPageSize] = useState(20);
   const [openActionId, setOpenActionId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<JobPostListItem | null>(
@@ -440,6 +445,7 @@ export function JobPostList() {
   }, [searchInput]);
 
   const jobPostsQuery = useJobPosts({
+    expiredDate,
     search: search || undefined,
     status: statuses.length > 0 ? statuses : undefined,
     departmentId: departmentIds.length > 0 ? departmentIds : undefined,
@@ -448,11 +454,16 @@ export function JobPostList() {
     pageSize,
   });
 
+  const expiredDateError = getDateSortError(
+    jobPostsQuery.error, "JOB_POST_INVALID_EXPIRED_DATE_FILTER", "expiredDate",
+  );
+  const data = jobPostsQuery.data ?? (expiredDateError ? lastData : undefined);
+
   if (jobPostsQuery.isPending) {
     return <JobPostListSkeleton />;
   }
 
-  if (!jobPostsQuery.data || jobPostsQuery.error) {
+  if (!data || (jobPostsQuery.error && !expiredDateError)) {
     return (
       <section className="job-post-list__error">
         <h1>Quản lý tuyển dụng</h1>
@@ -468,7 +479,6 @@ export function JobPostList() {
     );
   }
 
-  const data = jobPostsQuery.data;
   const departmentOptions = (departmentsQuery.data ?? []).map((department) => ({
     label: department.name,
     value: department.id,
@@ -594,7 +604,7 @@ export function JobPostList() {
             Đang tải dữ liệu...
           </div>
         )}
-        {data.items.length > 0 ? (
+        {data.items.length > 0 || expiredDate ? (
           <div className="job-post-list__table-scroll">
             <table
               className="job-post-list__table"
@@ -604,7 +614,10 @@ export function JobPostList() {
                 <tr>
                   <th scope="col">Tên công việc</th>
                   <th scope="col">Mô tả ngắn</th>
-                  <th scope="col">Ngày hết hạn</th>
+                  <DateSortHeader
+                    label="Ngày hết hạn" value={expiredDate} error={expiredDateError}
+                    onChange={(value) => { setLastData(data); setExpiredDate(value); setPage(1); }}
+                  />
                   <th scope="col">Trạng thái</th>
                   <th scope="col">Chỉ tiêu</th>
                   <th scope="col">Số đơn chờ duyệt</th>
@@ -614,6 +627,7 @@ export function JobPostList() {
                 </tr>
               </thead>
               <tbody>
+                {data.items.length === 0 && <tr><td colSpan={7} className="date-sort__empty">Không tìm thấy tin tuyển dụng phù hợp.</td></tr>}
                 {data.items.map((item) => (
                   <tr key={item.id} className="job-post-list__row">
                     <td>

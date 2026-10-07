@@ -22,9 +22,11 @@ import { useNewsArticles } from '@/features/news/hooks/use-news-articles'
 import { useDeleteNewsArticle } from '@/features/news/hooks/use-delete-news-article'
 import { useNewsCategories } from '@/features/news/hooks/use-news-categories'
 import { NewsDeleteConfirmationModal } from '@/features/news/components/news-delete-confirmation-modal'
-import type { NewsArticleListItem, NewsStatusFilter } from '@/features/news/types'
+import type { NewsArticleListItem, NewsStatusFilter, PagedNewsArticleList } from '@/features/news/types'
 import { getNewsMutationErrorMessage } from '@/features/news/utils/news-media'
 import type { ApiResponse } from '@/lib/http/api-response'
+import { DateSortHeader } from '@/components/date-sort-header'
+import { getDateSortError, type DateSortDirection } from '@/lib/date-sort'
 import { ROUTE_PATHS } from '@/routes/route-paths'
 
 const SEARCH_DEBOUNCE_MS = 350
@@ -365,6 +367,9 @@ export function NewsArticleList() {
   const [selectedStatuses, setSelectedStatuses] = useState<NewsStatusFilter[]>([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
   const [page, setPage] = useState(1)
+  const [createdAt, setCreatedAt] = useState<DateSortDirection>()
+  const [publishAt, setPublishAt] = useState<DateSortDirection>()
+  const [lastData, setLastData] = useState<PagedNewsArticleList>()
   const [pageSize, setPageSize] = useState(20)
   const [openActionId, setOpenActionId] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<NewsArticleListItem | null>(null)
@@ -381,6 +386,8 @@ export function NewsArticleList() {
   }, [searchInput])
 
   const articlesQuery = useNewsArticles({
+    createdAt,
+    publishAt,
     search: search || undefined,
     status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
     categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
@@ -388,7 +395,10 @@ export function NewsArticleList() {
     pageSize,
   })
   const categoriesQuery = useNewsCategories()
-  const data = articlesQuery.data
+  const createdAtError = getDateSortError(articlesQuery.error, 'NEWS_QUERY_INVALID', 'createdAt')
+  const publishAtError = getDateSortError(articlesQuery.error, 'NEWS_QUERY_INVALID', 'publishAt')
+  const sortError = createdAtError || publishAtError
+  const data = articlesQuery.data ?? (sortError ? lastData : undefined)
 
   function requestDelete(article: NewsArticleListItem) {
     deleteNewsArticle.reset()
@@ -420,7 +430,7 @@ export function NewsArticleList() {
     return <NewsArticleListSkeleton />
   }
 
-  if (!data || articlesQuery.error) {
+  if (!data || (articlesQuery.error && !sortError)) {
     return (
       <section className="news-list__error">
         <h1>Quản lý bài viết</h1>
@@ -509,21 +519,28 @@ export function NewsArticleList() {
             Đang tải dữ liệu...
           </div>
         )}
-        {data.items.length > 0 ? (
+        {data.items.length > 0 || createdAt || publishAt ? (
           <div className="news-list__table-scroll">
             <table className="news-list__table" aria-label="Danh sách bài viết">
               <thead>
                 <tr>
                   <th scope="col">Tiêu đề</th>
                   <th scope="col">Tác giả</th>
-                  <th scope="col">Ngày tạo</th>
-                  <th scope="col">Ngày đăng</th>
+                  <DateSortHeader
+                    label="Ngày tạo" value={createdAt} error={createdAtError}
+                    onChange={(value) => { setLastData(data); setCreatedAt(value); setPage(1) }}
+                  />
+                  <DateSortHeader
+                    label="Ngày đăng" value={publishAt} error={publishAtError}
+                    onChange={(value) => { setLastData(data); setPublishAt(value); setPage(1) }}
+                  />
                   <th scope="col">Thể loại</th>
                   <th scope="col">Trạng thái</th>
                   <th scope="col" className="news-list__actions-heading"><span className="sr-only">Thao tác</span></th>
                 </tr>
               </thead>
               <tbody>
+                {data.items.length === 0 && <tr><td colSpan={7} className="date-sort__empty">Không tìm thấy bài viết phù hợp.</td></tr>}
                 {data.items.map((article) => (
                   <tr key={article.id} className="news-list__row">
                     <td>

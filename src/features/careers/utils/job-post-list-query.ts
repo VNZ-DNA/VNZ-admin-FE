@@ -1,4 +1,7 @@
+import type { DateSortDirection } from '@/lib/date-sort'
+
 export interface JobPostListQueryParams {
+  expiredDate?: DateSortDirection
   search?: string
   status?: readonly string[]
   departmentId?: readonly string[]
@@ -20,6 +23,7 @@ export function buildJobPostListQuery(params: JobPostListQueryParams): URLSearch
   const search = params.search?.trim()
 
   if (search) query.set('search', search)
+  if (params.expiredDate) query.set('expiredDate', params.expiredDate)
   appendDistinctValues(query, 'status', params.status)
   appendDistinctValues(query, 'departmentId', params.departmentId)
   appendDistinctValues(query, 'jobLevel', params.jobLevel)
