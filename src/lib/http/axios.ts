@@ -1,5 +1,11 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
 
+import {
+  DEFAULT_RATE_LIMIT_MESSAGE,
+  getRateLimitErrorInfo,
+  isRateLimitError,
+} from '@/lib/http/rate-limit'
+
 declare module 'axios' {
   export interface AxiosRequestConfig {
     _hasRetriedAfterRefresh?: boolean
@@ -19,6 +25,21 @@ type AuthInterceptorHandlers = {
 }
 
 let authHandlers: AuthInterceptorHandlers | null = null
+
+function decorateRateLimitError(error: { response?: { data?: unknown }; message: string }): void {
+  const info = getRateLimitErrorInfo(error, DEFAULT_RATE_LIMIT_MESSAGE)
+  if (!info.isRateLimited) return
+
+  if (error.response) {
+    const responseData = error.response.data
+    if (responseData && typeof responseData === 'object') {
+      const mutableData = responseData as { message?: string }
+      mutableData.message = info.message
+    }
+  }
+
+  error.message = info.message
+}
 
 function isAuthEndpoint(url?: string): boolean {
   return Boolean(url?.startsWith('/api/v1/auth/'))
@@ -49,6 +70,10 @@ api.interceptors.response.use(
 
     const request = error.config
     const status = error.response?.status
+
+    if (isRateLimitError(error)) {
+      decorateRateLimitError(error)
+    }
 
     if (request.skipAuthRefresh || isAuthEndpoint(request.url)) {
       return Promise.reject(error)

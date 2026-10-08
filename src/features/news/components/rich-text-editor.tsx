@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { newsService } from '@/features/news/services/news.service'
 import { NEWS_IMAGE_ACCEPT, validateNewsImage } from '@/features/news/utils/news-media'
+import { getApiErrorMessage } from '@/lib/http/rate-limit'
 
 type RichTextEditorVariant = 'summary' | 'content'
 
@@ -159,7 +160,10 @@ export function RichTextEditor({
     try {
       setIsUploadingMedia(true)
       setMediaError(null)
-      const uploaded = await Promise.all(mediaFiles.map((file) => newsService.uploadContentImage(file)))
+      const uploaded = []
+      for (const file of mediaFiles) {
+        uploaded.push(await newsService.uploadContentImage(file))
+      }
       const caption = mediaCaption.trim()
       const captionHtml = caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''
 
@@ -177,8 +181,8 @@ export function RichTextEditor({
       setMediaAlts(['', ''])
       setMediaCaption('')
       setMediaError(null)
-    } catch {
-      setMediaError('Không thể tải ảnh nội dung lên hệ thống. Vui lòng thử lại.')
+    } catch (error: unknown) {
+      setMediaError(getApiErrorMessage(error, 'Không thể tải ảnh nội dung lên hệ thống. Vui lòng thử lại.'))
     } finally {
       setIsUploadingMedia(false)
     }
